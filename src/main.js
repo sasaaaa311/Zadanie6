@@ -1,11 +1,11 @@
 import "./style.css";
 import dayjs from "dayjs";
 
-const form = document.querySelector("#form") as HTMLFormElement;
-const input = document.querySelector("#birthdate") as HTMLInputElement;
-const dialog = document.querySelector("#dialog") as HTMLDialogElement;
-const result = document.querySelector("#result") as HTMLParagraphElement;
-const closeBtn = document.querySelector("#close") as HTMLButtonElement;
+const form = document.querySelector("#form");
+const input = document.querySelector("#birthdate");
+const dialog = document.querySelector("#dialog");
+const result = document.querySelector("#result");
+const closeBtn = document.querySelector("#close");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -24,7 +24,7 @@ form.addEventListener("submit", (e) => {
     birthDate.month() === today.month();
 
   if (isBirthday) {
-    alert("Wszystkiego najlepszego! 🎉");
+    alert("Wszystkiego najlepszego!");
   }
 });
 
