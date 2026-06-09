@@ -2,13 +2,13 @@ const SUPABASE_URL = "https://fvalbyomwgzflzkbjcvv.supabase.co";
 const SUPABASE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2YWxieW9td2d6Zmx6a2JqY3Z2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyOTEzNDYsImV4cCI6MjA5NTg2NzM0Nn0.q4gbHyrelLNYz39SotR31u__uzuI--ZJYKt-quVp33Q";
 
-import "./style.css";
 import dayjs from "dayjs";
 
 const headers = {
   apikey: SUPABASE_KEY,
   Authorization: `Bearer ${SUPABASE_KEY}`,
   "Content-Type": "application/json",
+  Accept: "application/json",
 };
 
 const form = document.querySelector("#form");
@@ -44,38 +44,36 @@ closeBtn.addEventListener("click", () => {
 
 async function fetchArticles() {
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/article?select=*`,
+    `${SUPABASE_URL}/rest/v1/article?select=*&order=created_at.desc`,
     { headers }
   );
 
   const data = await res.json();
-  renderArticles(data);
+  render(data);
 }
 
-function renderArticles(articles) {
-  const container = document.querySelector("#articles");
-  if (!container) return;
+function render(data) {
+  const el = document.querySelector("#articles");
+  el.innerHTML = "";
 
-  container.innerHTML = "";
-
-  articles.forEach((a) => {
+  data.forEach((a) => {
     const div = document.createElement("div");
 
     div.className = "p-4 border rounded mb-4";
 
     div.innerHTML = `
-      <h2>${a.title}</h2>
-      <h3>${a.subtitle}</h3>
+      <h2 class="font-bold text-lg">${a.title}</h2>
+      <h3 class="text-gray-600">${a.subtitle}</h3>
       <p>Autor: ${a.author}</p>
-      <p>${a.content}</p>
-      <small>${a.created_at}</small>
+      <p class="mt-2">${a.content}</p>
+      <small class="text-gray-400">${new Date(a.created_at).toLocaleString()}</small>
     `;
 
-    container.appendChild(div);
+    el.appendChild(div);
   });
 }
 
-async function createArticle(e) {
+async function create(e) {
   e.preventDefault();
 
   const title = document.querySelector("#title").value;
@@ -97,9 +95,5 @@ async function createArticle(e) {
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchArticles();
-
-  const formArticles = document.querySelector("#form-articles");
-  if (formArticles) {
-    formArticles.addEventListener("submit", createArticle);
-  }
+  document.querySelector("#form-articles").addEventListener("submit", create);
 });

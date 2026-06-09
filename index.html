@@ -4,52 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sprawdz ile dni zyjesz</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="p-10">
-  <h1 class="text-2xl font-bold mb-4">
+
+  <h1 class="text-2xl font-bold mb-6">
     Sprawdz ile dni zyjesz
   </h1>
 
-  <form id="form" class="flex gap-4 items-center">
-    <input
-      type="date"
-      id="birthdate"
-      class="border p-2"
-    />
-
-    <button
-      type="submit"
-      class="bg-blue-300 p-4"
-    >
+  <form id="form" class="flex gap-4 items-center mb-6">
+    <input type="date" id="birthdate" class="border p-2" />
+    <button type="submit" class="bg-blue-300 p-3">
       Sprawdz
     </button>
   </form>
 
-  <dialog
-    id="dialog"
-    class="bg-gray-200 p-4"
-  >
-    <button
-      id="close"
-      class="mb-2"
-    >
-      X
-    </button>
-
-    <p
-      id="result"
-      class="text-red-600"
-    ></p>
+  <dialog id="dialog" class="p-4 bg-gray-100">
+    <button id="close" class="mb-2">X</button>
+    <p id="result"></p>
   </dialog>
 
   <hr class="my-10">
 
   <h2 class="text-xl font-bold mb-4">Articles</h2>
 
-  <div id="articles" class="mb-6"></div>
+  <div id="articles" class="mb-8"></div>
 
-  <form id="form-articles" class="flex flex-col gap-2">
+  <form id="form-articles" class="flex flex-col gap-2 max-w-md">
     <input id="title" class="border p-2" placeholder="title" />
     <input id="subtitle" class="border p-2" placeholder="subtitle" />
     <input id="author" class="border p-2" placeholder="author" />
@@ -60,6 +43,6 @@
     </button>
   </form>
 
-  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
-</html>
+</html> 
