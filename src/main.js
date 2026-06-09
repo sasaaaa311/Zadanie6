@@ -1,8 +1,7 @@
-const SUPABASE_URL = "https://fvalbyomwgzflzkbjcvv.supabase.co";
-const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2YWxieW9td2d6Zmx6a2JqY3Z2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyOTEzNDYsImV4cCI6MjA5NTg2NzM0Nn0.q4gbHyrelLNYz39SotR31u__uzuI--ZJYKt-quVp33Q";
-
 import dayjs from "dayjs";
+
+const SUPABASE_URL = "https://fvalbyomwgzflzkbjcvv.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2YWxieW9td2d6Zmx6a2JqY3Z2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyOTEzNDYsImV4cCI6MjA5NTg2NzM0Nn0.q4gbHyrelLNYz39SotR31u__uzuI--ZJYKt-quVp33Q";
 
 const headers = {
   apikey: SUPABASE_KEY,
@@ -11,62 +10,81 @@ const headers = {
   Accept: "application/json",
 };
 
+// --- LOGIKA: LICZNIK URODZIN ---
 const form = document.querySelector("#form");
 const input = document.querySelector("#birthdate");
 const dialog = document.querySelector("#dialog");
 const result = document.querySelector("#result");
 const closeBtn = document.querySelector("#close");
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
+if (form && input && dialog && result && closeBtn) {
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  const birthDate = dayjs(input.value);
-  const today = dayjs();
+    const birthDate = dayjs(input.value);
+    const today = dayjs();
 
-  const days = today.diff(birthDate, "day");
+    const days = today.diff(birthDate, "day");
 
-  result.textContent = `Minęło ${days} dni od Twoich urodzin`;
+    result.textContent = `Minęło ${days} dni od Twoich urodzin`;
+    dialog.showModal();
 
-  dialog.showModal();
+    const isBirthday =
+      birthDate.date() === today.date() &&
+      birthDate.month() === today.month();
 
-  const isBirthday =
-    birthDate.date() === today.date() &&
-    birthDate.month() === today.month();
+    if (isBirthday) {
+      alert("Wszystkiego najlepszego!");
+    }
+  });
 
-  if (isBirthday) {
-    alert("Wszystkiego najlepszego!");
-  }
-});
+  closeBtn.addEventListener("click", () => {
+    dialog.close();
+  });
+}
 
-closeBtn.addEventListener("click", () => {
-  dialog.close();
-});
-
+// --- LOGIKA: SUPABASE (ARTYKUŁY) ---
 async function fetchArticles() {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/article?select=*&order=created_at.desc`,
-    { headers }
-  );
-
-  const data = await res.json();
-  render(data);
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/article?select=*&order=created_at.desc`,
+      { headers }
+    );
+    const data = await res.json();
+    render(data);
+  } catch (error) {
+    console.error("Błąd podczas pobierania artykułów:", error);
+    const el = document.querySelector("#articles");
+    if (el) el.innerHTML = `<p class="text-red-500 font-medium">Nie udało się pobrać artykułów.</p>`;
+  }
 }
 
 function render(data) {
   const el = document.querySelector("#articles");
+  if (!el) return;
+  
   el.innerHTML = "";
+
+  if (data.length === 0) {
+    el.innerHTML = `<p class="text-gray-400 italic">Brak artykułów w bazie danych.</p>`;
+    return;
+  }
 
   data.forEach((a) => {
     const div = document.createElement("div");
 
-    div.className = "p-4 border rounded mb-4";
+    // Ostylowanie kart artykułów za pomocą Tailwind CSS
+    div.className = "p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition duration-200";
 
     div.innerHTML = `
-      <h2 class="font-bold text-lg">${a.title}</h2>
-      <h3 class="text-gray-600">${a.subtitle}</h3>
-      <p>Autor: ${a.author}</p>
-      <p class="mt-2">${a.content}</p>
-      <small class="text-gray-400">${new Date(a.created_at).toLocaleString()}</small>
+      <h3 class="font-extrabold text-2xl text-gray-900 leading-tight">${a.title}</h3>
+      <h4 class="text-md font-medium text-indigo-600 mt-1 mb-3">${a.subtitle}</h4>
+      <p class="text-gray-700 whitespace-pre-line leading-relaxed">${a.content}</p>
+      
+      <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+        <span>Autor: <strong class="text-gray-700">${a.author}</strong></span>
+        <span>${new Date(a.created_at).toLocaleString('pl-PL')}</span>
+      </div>
     `;
 
     el.appendChild(div);
@@ -81,19 +99,30 @@ async function create(e) {
   const author = document.querySelector("#author").value;
   const content = document.querySelector("#content").value;
 
-  await fetch(`${SUPABASE_URL}/rest/v1/article`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify([
-      { title, subtitle, author, content }
-    ]),
-  });
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/article`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify([
+        { title, subtitle, author, content }
+      ]),
+    });
 
-  fetchArticles();
-  e.target.reset();
+    // Odświeżenie listy i zresetowanie pól formularza po udanym dodaniu
+    fetchArticles();
+    e.target.reset();
+  } catch (error) {
+    console.error("Błąd podczas dodawania artykułu:", error);
+    alert("Wystąpił błąd podczas publikacji artykułu.");
+  }
 }
 
+// Inicjalizacja po załadowaniu drzewa DOM
 document.addEventListener("DOMContentLoaded", () => {
   fetchArticles();
-  document.querySelector("#form-articles").addEventListener("submit", create);
+  
+  const articleForm = document.querySelector("#form-articles");
+  if (articleForm) {
+    articleForm.addEventListener("submit", create);
+  }
 });
