@@ -1,16 +1,15 @@
 import dayjs from "dayjs";
 
-const SUPABASE_URL = "https://fvalbyomwgzflzkbjcvv.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2YWxieW9td2d6Zmx6a2JqY3Z2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyOTEzNDYsImV4cCI6MjA5NTg2NzM0Nn0.q4gbHyrelLNYz39SotR31u__uzuI--ZJYKt-quVp33Q";
+const supabaseUrl = 'https://xyomfijyqaueocgalgjd.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5b21maWp5cWF1ZW9jZ2FsZ2pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTM0ODQsImV4cCI6MjA5Njc4OTQ4NH0.9CTStUEssRi02FT5XVdAIMXA5xu59QZ2435n6EdOraI';
 
 const headers = {
-  apikey: SUPABASE_KEY,
-  Authorization: `Bearer ${SUPABASE_KEY}`,
+  apikey: supabaseKey,
+  Authorization: `Bearer ${supabaseKey}`,
   "Content-Type": "application/json",
   Accept: "application/json",
 };
 
-// --- LOGIKA: LICZNIK URODZIN ---
 const form = document.querySelector("#form");
 const input = document.querySelector("#birthdate");
 const dialog = document.querySelector("#dialog");
@@ -43,11 +42,10 @@ if (form && input && dialog && result && closeBtn) {
   });
 }
 
-// --- LOGIKA: SUPABASE (ARTYKUŁY) ---
 async function fetchArticles() {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/article?select=*&order=created_at.desc`,
+      `${supabaseUrl}/rest/v1/article?select=*&order=created_at.desc`,
       { headers }
     );
     const data = await res.json();
@@ -65,7 +63,7 @@ function render(data) {
   
   el.innerHTML = "";
 
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     el.innerHTML = `<p class="text-gray-400 italic">Brak artykułów w bazie danych.</p>`;
     return;
   }
@@ -73,7 +71,6 @@ function render(data) {
   data.forEach((a) => {
     const div = document.createElement("div");
 
-    // Ostylowanie kart artykułów za pomocą Tailwind CSS
     div.className = "p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition duration-200";
 
     div.innerHTML = `
@@ -100,7 +97,7 @@ async function create(e) {
   const content = document.querySelector("#content").value;
 
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/article`, {
+    await fetch(`${supabaseUrl}/rest/v1/article`, {
       method: "POST",
       headers,
       body: JSON.stringify([
@@ -108,7 +105,6 @@ async function create(e) {
       ]),
     });
 
-    // Odświeżenie listy i zresetowanie pól formularza po udanym dodaniu
     fetchArticles();
     e.target.reset();
   } catch (error) {
@@ -117,7 +113,6 @@ async function create(e) {
   }
 }
 
-// Inicjalizacja po załadowaniu drzewa DOM
 document.addEventListener("DOMContentLoaded", () => {
   fetchArticles();
   
