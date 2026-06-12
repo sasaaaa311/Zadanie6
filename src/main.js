@@ -45,7 +45,7 @@ if (form && input && dialog && result && closeBtn) {
 async function fetchArticles() {
   try {
     const res = await fetch(
-      `${supabaseUrl}/rest/v1/article?select=*&order=created_at.desc`,
+      `${supabaseUrl}article?select=*&order=created_at.desc`,
       { headers }
     );
     const data = await res.json();
@@ -97,7 +97,7 @@ async function create(e) {
   const content = document.querySelector("#content").value;
 
   try {
-    await fetch(`${supabaseUrl}/rest/v1/article`, {
+    await fetch(`${supabaseUrl}article`, {
       method: "POST",
       headers,
       body: JSON.stringify([
