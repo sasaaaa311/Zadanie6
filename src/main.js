@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
-const supabaseUrl = 'https://xyomfijyqaueocgalgjd.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5b21maWp5cWF1ZW9jZ2FsZ2pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTM0ODQsImV4cCI6MjA5Njc4OTQ4NH0.9CTStUEssRi02FT5XVdAIMXA5xu59QZ2435n6EdOraI';
+const supabaseUrl = 'https://fvalbyomwgzflzkbjcvv.supabase.co/rest/v1/';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2YWxieW9td2d6Zmx6a2JqY3Z2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyOTEzNDYsImV4cCI6MjA5NTg2NzM0Nn0.q4gbHyrelLNYz39SotR31u__uzuI--ZJYKt-quVp33Q';
 
 const headers = {
   apikey: supabaseKey,
